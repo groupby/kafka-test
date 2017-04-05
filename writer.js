@@ -20,6 +20,8 @@ const kafkaConfig = {
   topic:   'testTopic'
 };
 
+
+
 const kafkaWriter = new KafkaWriter(Kafka.createProducer(zookeeperConfig.host, zookeeperConfig.port, kafkaConfig.topic));
 
 const tryOpenWriter = () => kafkaWriter.open()
@@ -34,5 +36,12 @@ common.utils.promiseUntil((res) => res, tryOpenWriter, KAFKA_RETRY_INTERVAL_MS)
   .then(() => {
     log.info('writer ready');
 
+    setInterval(() => writeStuff(), 100);
+
     // kafkaWriter.write(someObject)
   });
+
+const writeStuff = () => {
+  log.info('Writing');
+  kafkaWriter.write({things: 'yo'});
+};
